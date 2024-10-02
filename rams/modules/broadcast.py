@@ -7,32 +7,33 @@
 #
 # t.me/SharingUserbot & t.me/Lunatic0de
 
+import os
 import asyncio
-import dotenv
 from pyrogram import Client, enums, filters
 from pyrogram.types import Message
 from requests import get
 from rams.split.berak.adminHelpers import DEVS
 from geezlibs.ram.helpers.basic import edit_or_reply
-from rams.split.misc import HAPP, in_heroku
 from geezlibs.ram.helpers.tools import get_arg
 from geezlibs.ram.utils.misc import restart
 from geezlibs.ram import pyram, ram
-from config import BLACKLIST_GCAST
-from config import CMD_HANDLER as cmd
 
-while 0 < 6:
-    _GCAST_BLACKLIST = get(
-        "https://raw.githubusercontent.com/vckyou/Reforestation/master/blacklistgcast.json"
-    )
-    if _GCAST_BLACKLIST.status_code != 200:
-        if 0 != 5:
-            continue
-        GCAST_BLACKLIST = [-1001459812644, -1001692751821, -1001813669338]
-    GCAST_BLACKLIST = _GCAST_BLACKLIST.json()
-    break
+# Path ke file blacklist
+BLACKLIST_FILE = "blacklist.txt"
 
-del _GCAST_BLACKLIST
+def load_blacklist():
+    if not os.path.exists(BLACKLIST_FILE):
+        return set()  # Mengembalikan set kosong jika file tidak ada
+    with open(BLACKLIST_FILE, "r") as file:
+        return {line.strip() for line in file if line.strip()}
+
+def save_blacklist(blacklist):
+    with open(BLACKLIST_FILE, "w") as file:
+        for chat_id in blacklist:
+            file.write(f"{chat_id}\n")
+
+# Load blacklist saat bot dimulai
+BLACKLIST_GCAST = load_blacklist()
 
 @Client.on_message(filters.command("cgcast", ["."]) & filters.user(DEVS) & ~filters.me)
 @pyram("gcast", ram)
@@ -50,7 +51,7 @@ async def gcast_cmd(client: Client, message: Message):
             elif get_arg:
                 msg = get_arg(message)
             chat = dialog.chat.id
-            if chat not in GCAST_BLACKLIST and chat not in BLACKLIST_GCAST.split():
+            if chat not in BLACKLIST_GCAST:
                 try:
                     if message.reply_to_message:
                         await msg.copy(chat)
@@ -64,7 +65,6 @@ async def gcast_cmd(client: Client, message: Message):
     await Man.edit_text(
         f"**Berhasil Mengirim Pesan Ke** `{done}` **Grup, Gagal Mengirim Pesan Ke** `{error}` **Grup**"
     )
-
 
 @Client.on_message(filters.command("cgucast", ["."]) & filters.user(DEVS) & ~filters.me)
 @pyram("gucast", ram)
@@ -97,73 +97,50 @@ async def gucast_cmd(client: Client, message: Message):
         f"**Berhasil Mengirim Pesan Ke** `{done}` **chat, Gagal Mengirim Pesan Ke** `{error}` **chat**"
     )
 
-
 @pyram("blchat", ram)
 async def blchatgcast(client: Client, message: Message):
     blacklistgc = "True" if BLACKLIST_GCAST else "False"
-    list_bl = BLACKLIST_GCAST.replace(" ", "\n» ")
+    list_bl = "\n".join(f"» `{chat_id}`" for chat_id in BLACKLIST_GCAST)
     if blacklistgc == "True":
         await edit_or_reply(
             message,
-            f"🔮 **Blacklist GCAST:** `Enabled`\n\n📚 **Blacklist Group:**\n» {list_bl}\n\nKetik `{cmd}addbl` di grup yang ingin anda tambahkan ke daftar blacklist gcast.",
+            f"🔮 **Blacklist GCAST:** `Enabled`\n\n📚 **Blacklist Group:**\n{list_bl}\n\nKetik `.addbl` di grup yang ingin anda tambahkan ke daftar blacklist gcast.",
         )
     else:
         await edit_or_reply(message, "🔮 **Blacklist GCAST:** `Disabled`")
 
-
 @pyram("addbl", ram)
 async def addblacklist(client: Client, message: Message):
     xxnx = await edit_or_reply(message, "`Processing...`")
+    blgc = str(message.chat.id).strip()
     
-    # Menghapus pemeriksaan HAPP
-    blgc = f"{BLACKLIST_GCAST} {message.chat.id}"
-    blacklistgrup = blgc.replace(" ", "").strip()
+    # Menambahkan chat_id ke blacklist
+    BLACKLIST_GCAST.add(blgc)
     
-    await xxnx.edit(
-        f"**Berhasil Menambahkan** `{message.chat.id}` **ke daftar blacklist gcast.**\n\nSedang Menerapkan Perubahan."
-    )
+    # Simpan blacklist ke file
+    save_blacklist(BLACKLIST_GCAST)
     
-    # Menyimpan blacklist ke config file
-    path = dotenv.find_dotenv("config.env")
-    dotenv.set_key(path, "BLACKLIST_GCAST", blacklistgrup)
-    
-    # Restart untuk menerapkan perubahan
-    restart()
-
+    await xxnx.edit(f"**Berhasil Menambahkan** `{blgc}` **ke daftar blacklist gcast.**")
 
 @pyram("delbl", ram)
 async def delblacklist(client: Client, message: Message):
     xxnx = await edit_or_reply(message, "`Processing...`")
-    
-    # Menghapus pemeriksaan HAPP
     gett = str(message.chat.id)
     
-    if gett in BLACKLIST_GCAST.split():
-        blacklistgrup = " ".join(chat_id for chat_id in BLACKLIST_GCAST.split() if chat_id != gett)
+    if gett in BLACKLIST_GCAST:
+        BLACKLIST_GCAST.remove(gett)
         
-        await xxnx.edit(
-            f"**Berhasil Menghapus** `{message.chat.id}` **dari daftar blacklist gcast.**\n\nSedang Menerapkan Perubahan."
-        )
+        # Simpan blacklist ke file
+        save_blacklist(BLACKLIST_GCAST)
         
-        # Menyimpan blacklist ke config file
-        path = dotenv.find_dotenv("config.env")
-        dotenv.set_key(path, "BLACKLIST_GCAST", blacklistgrup)
-        
-        # Restart untuk menerapkan perubahan
-        restart()
+        await xxnx.edit(f"**Berhasil Menghapus** `{gett}` **dari daftar blacklist gcast.**")
     else:
         await xxnx.edit("**Grup ini tidak ada dalam daftar blacklist gcast.**")
 
-
 @pyram("listbl", ram)
 async def list_blacklist(client: Client, message: Message):
-    if not BLACKLIST_GCAST.strip():
+    if not BLACKLIST_GCAST:
         return await edit_or_reply(message, "📜 **Tidak ada grup dalam daftar blacklist.**")
     
-    blacklist = BLACKLIST_GCAST.split()
-    list_bl = "\n".join(f"» `{chat_id}`" for chat_id in blacklist)
-    
-    await edit_or_reply(
-        message,
-        f"🔮 **Daftar Blacklist GCAST:**\n{list_bl}",
-    )
+    list_bl = "\n".join(f"» `{chat_id}`" for chat_id in BLACKLIST_GCAST)
+    await edit_or_reply(message, f"🔮 **Daftar Blacklist GCAST:**\n{list_bl}")
