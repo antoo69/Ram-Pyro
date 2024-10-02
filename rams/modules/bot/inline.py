@@ -66,15 +66,15 @@ async def alive_function(message: Message, answers):
     end = datetime.now()
     duration = (end - start).microseconds / 1000
     msg = (
-        f"☞ 𝗥𝗮𝗺𝗣𝘆𝗿𝗼-𝗕𝗼𝘁!!✨\n\n"
-        f"☞ 𝗦𝗶𝗴𝗻𝗮𝗹: %sms\n"
-        f"☞ 𝗨𝗽𝘁𝗶𝗺𝗲: </b> <code>{uptime}</code>" % (duration)
+        f"☞ Ferdi-Pyro Bot!!🔥\n\n"
+        f"☞ Signal: %sms\n"
+        f"☞ Uptime: </b> <code>{uptime}</code>" % (duration)
     )
     answers.append(
         InlineQueryResultArticle(
             title="Alive",
             description="Check Bot's Stats",
-            thumb_url="https://telegra.ph/file/c78bb1efdeed38ee16eb2.png",
+            thumb_url="https://envs.sh/PHS.jpg",
             input_message_content=InputTextMessageContent(
                 msg, parse_mode=ParseMode.HTML, disable_web_page_preview=True
             ),
@@ -87,7 +87,7 @@ async def alive_function(message: Message, answers):
 
 async def ping_function(message: Message, answers):
     msg = (
-        f"𝗥𝗮𝗺𝗣𝘆𝗿𝗼-𝗠𝗮𝘀𝘁𝗲𝗿 \n"
+        f"Ferdi-Pyro  \n"
         "ㅤ⋙ sᴛᴀᴛᴜs : 𝗔𝗸𝘁𝗶𝗳!!! \n"
         f"ㅤㅤ⋙ ᴍᴏᴅᴜʟᴇs: </b> <code>{len(modules)} </code> \n"
         f"ㅤㅤ⋙ ᴠᴇʀsɪ ʙᴏᴛ: {BOT_VER} \n"
@@ -99,7 +99,7 @@ async def ping_function(message: Message, answers):
         InlineQueryResultArticle(
             title="rama",
             description="Check Bot's Stats",
-            thumb_url="https://telegra.ph/file/c78bb1efdeed38ee16eb2.png",
+            thumb_url="https://envs.sh/PHS.jpg",
             input_message_content=InputTextMessageContent(
                 msg, parse_mode=ParseMode.HTML, disable_web_page_preview=True
             ),
@@ -113,10 +113,10 @@ async def ping_function(message: Message, answers):
 async def repo_function(message: Message, answers):
     msg = (
         f"╭✠╼━━━━━━━━━━━━━━━\n"
-        f"│ ✨ 𝗥𝗮𝗺𝗣𝘆𝗿𝗼-𝗕𝗼𝘁 ✨\n"
+        f"│ ✨ Ferdi-Pyro ✨\n"
         f"├✠╼━━━━━━━━━━━━━━━\n"
-        f"│★ 𝗕𝗼𝘁 𝗩𝗲𝗿    : {BOT_VER}\n"
-        f"│★ 𝗕𝗿𝗮𝗻𝗰𝗵     : {branch}\n"
+        f"│★ Bot Ver    : {BOT_VER}\n"
+        f"│★ Branch     : {branch}\n"
         f"╰✠╼━━━━━━━━━━━━━━━━\n"
         f"©️ Geez|Ram Projects"
     )
@@ -124,7 +124,7 @@ async def repo_function(message: Message, answers):
         InlineQueryResultArticle(
             title="repo",
             description="Check Bot's Stats",
-            thumb_url="https://telegra.ph/file/c78bb1efdeed38ee16eb2.png",
+            thumb_url="https://envs.sh/PHS.jpg",
             input_message_content=InputTextMessageContent(
                 msg, parse_mode=ParseMode.HTML, disable_web_page_preview=True
             ),
@@ -141,7 +141,7 @@ async def help_function(answers):
         InlineQueryResultArticle(
             title="Help Article!",
             description="Check Command List & Help",
-            thumb_url="https://telegra.ph/file/c78bb1efdeed38ee16eb2.png",
+            thumb_url="https://envs.sh/PHS.jpg",
             input_message_content=InputTextMessageContent(
                 Data.text_help_menu.format(len(CMD_HELP))
             ),
@@ -166,7 +166,7 @@ async def inline_query_handler(client: Client, query):
         elif string_given.startswith("helper"):
             answers = await help_function(answers)
             await client.answer_inline_query(query.id, results=answers, cache_time=0)
-        elif string_given.startswith("rama"):
+        elif string_given.startswith("Ferdi"):
             answers = await ping_function(query, answers)
             await client.answer_inline_query(query.id, results=answers, cache_time=0)
         elif string_given.startswith("repo"):
