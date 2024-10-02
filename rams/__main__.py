@@ -11,7 +11,7 @@ from rams.modules import ALL_MODULES
 
 
 MSG_ON = """
-🔥 **RamPyro-Bot Menyala** 🔥
+🔥 **Ferdi-Pyro bot** 🔥
 ━───────╯⇕╰───────━
 🤖 **Userbot Version -** `{}`
 ⚜️ prefixes: ? ! , . *
@@ -28,10 +28,10 @@ async def main():
             await bot.start()
             bot.me = await bot.get_me()
             ids.append(bot.me.id)
-            await bot.join_chat("GeezRam")
-            await bot.join_chat("userbotch")
-            await bot.join_chat("GeezSupport")
-            await bot.join_chat("temen_rendem")
+            await bot.join_chat("BestieVirtual")
+            await bot.join_chat("Nenen_degrees")
+            await bot.join_chat("Galerifsyrl")
+            await bot.join_chat("gbtnfer")
             try:
                 await bot.send_message(
                     BOTLOG_CHATID, MSG_ON.format(BOT_VER, CMD_HANDLER)
