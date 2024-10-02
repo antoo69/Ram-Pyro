@@ -52,7 +52,7 @@ def cb_wrapper(func):
         users = list_users
         if cb.from_user.id not in users:
             await cb.answer(
-                "Jangan Pencet² plis, Jiji anjing!!!",
+                "Jangan Di Pencet² Goblok!!!",
                 cache_time=0,
                 show_alert=True,
             )
@@ -60,7 +60,7 @@ def cb_wrapper(func):
             try:
                 await func(client, cb)
             except MessageNotModified:
-                await cb.answer("Dasar Anak Kontol😁")
+                await cb.answer("Tolol malah di pencet")
             except Exception:
                 print(format_exc())
                 await cb.answer(
@@ -82,7 +82,7 @@ def inline_wrapper(func):
                 results=[
                     (
                         InlineQueryResultArticle(
-                            title="Lu siapasi bangsat,bikin sndiri lah di @GeezRam",
+                            title="Lu mau pake bot?? Bikin di @fsyrl",
                             input_message_content=InputTextMessageContent(
                                 "Maaf anda tidak ada akses untuk menggunakan bot"
                             ),
