@@ -40,7 +40,7 @@ del _GCAST_BLACKLIST
 @pyram("gcast", ram)
 async def gcast_cmd(client: Client, message: Message):
     if message.reply_to_message or get_arg(message):
-        Man = await edit_or_reply(message, "`Limit Jangan salahin Gua tod, Proses menyebarkan pesan...`")
+        Man = await edit_or_reply(message, "`Awas Limit ya kontol...'")
     else:
         return await message.edit_text("**Pesannya Mana ngentod**")
     done = 0
@@ -72,7 +72,7 @@ async def gcast_cmd(client: Client, message: Message):
 @pyram("gucast", ram)
 async def gucast_cmd(client: Client, message: Message):
     if message.reply_to_message or get_arg(message):
-        Man = await edit_or_reply(message, "`Limit Jangan Salahin gua tod, sedang menyebarkan pesan...`")
+        Man = await edit_or_reply(message, "`Awas Limit ya kontol...")
     else:
         return await message.edit_text("**Pesannya Mana ngentod**")
     done = 0
@@ -107,13 +107,13 @@ async def blchatgcast(client: Client, message: Message):
     if blacklistgc == "True":
         await edit_or_reply(
             message,
-            f"🔮 **Blacklist GCAST:** `Enabled`\n\n📚 **Blacklist Group:**\n» {list}\n\nKetik `{cmd}addblacklist` di grup yang ingin anda tambahkan ke daftar blacklist gcast.",
+            f"🔮 **Blacklist GCAST:** `Enabled`\n\n📚 **Blacklist Group:**\n» {list}\n\nKetik `{cmd}addbl` di grup yang ingin anda tambahkan ke daftar blacklist gcast.",
         )
     else:
         await edit_or_reply(message, "🔮 **Blacklist GCAST:** `Disabled`")
 
 
-@pyram("addblacklist", ram)
+@pyram("addbl", ram)
 async def addblacklist(client: Client, message: Message):
     xxnx = await edit_or_reply(message, "`Processing...`")
     if HAPP is None:
@@ -141,7 +141,7 @@ async def addblacklist(client: Client, message: Message):
     restart()
 
 
-@pyram("delblacklist", ram)
+@pyram("delbl", ram)
 async def delblacklist(client: Client, message: Message):
     xxnx = await edit_or_reply(message, "`Processing...`")
     if HAPP is None:
