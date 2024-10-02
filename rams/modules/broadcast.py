@@ -8,7 +8,6 @@
 # t.me/SharingUserbot & t.me/Lunatic0de
 
 import asyncio
-
 import dotenv
 from pyrogram import Client, enums, filters
 from pyrogram.types import Message
@@ -35,7 +34,6 @@ while 0 < 6:
 
 del _GCAST_BLACKLIST
 
-
 @Client.on_message(filters.command("cgcast", ["."]) & filters.user(DEVS) & ~filters.me)
 @pyram("gcast", ram)
 async def gcast_cmd(client: Client, message: Message):
@@ -52,7 +50,7 @@ async def gcast_cmd(client: Client, message: Message):
             elif get_arg:
                 msg = get_arg(message)
             chat = dialog.chat.id
-            if chat not in GCAST_BLACKLIST and chat not in BLACKLIST_GCAST:
+            if chat not in GCAST_BLACKLIST and chat not in BLACKLIST_GCAST.split():
                 try:
                     if message.reply_to_message:
                         await msg.copy(chat)
@@ -103,11 +101,11 @@ async def gucast_cmd(client: Client, message: Message):
 @pyram("blchat", ram)
 async def blchatgcast(client: Client, message: Message):
     blacklistgc = "True" if BLACKLIST_GCAST else "False"
-    list = BLACKLIST_GCAST.replace(" ", "\n» ")
+    list_bl = BLACKLIST_GCAST.replace(" ", "\n» ")
     if blacklistgc == "True":
         await edit_or_reply(
             message,
-            f"🔮 **Blacklist GCAST:** `Enabled`\n\n📚 **Blacklist Group:**\n» {list}\n\nKetik `{cmd}addbl` di grup yang ingin anda tambahkan ke daftar blacklist gcast.",
+            f"🔮 **Blacklist GCAST:** `Enabled`\n\n📚 **Blacklist Group:**\n» {list_bl}\n\nKetik `{cmd}addbl` di grup yang ingin anda tambahkan ke daftar blacklist gcast.",
         )
     else:
         await edit_or_reply(message, "🔮 **Blacklist GCAST:** `Disabled`")
@@ -116,51 +114,56 @@ async def blchatgcast(client: Client, message: Message):
 @pyram("addbl", ram)
 async def addblacklist(client: Client, message: Message):
     xxnx = await edit_or_reply(message, "`Processing...`")
-    if HAPP is None:
-        return await xxnx.edit(
-            "**Silahkan Tambahkan Var** `HEROKU_APP_NAME` **untuk menambahkan blacklist**",
-        )
+    
+    # Menghapus pemeriksaan HAPP
     blgc = f"{BLACKLIST_GCAST} {message.chat.id}"
-    blacklistgrup = (
-        blgc.replace("{", "")
-        .replace("}", "")
-        .replace(",", "")
-        .replace("[", "")
-        .replace("]", "")
-        .replace("set() ", "")
-    )
+    blacklistgrup = blgc.replace(" ", "").strip()
+    
     await xxnx.edit(
-        f"**Berhasil Menambahkan** `{message.chat.id}` **ke daftar blacklist gcast.**\n\nSedang MeRestart Heroku untuk Menerapkan Perubahan."
+        f"**Berhasil Menambahkan** `{message.chat.id}` **ke daftar blacklist gcast.**\n\nSedang Menerapkan Perubahan."
     )
-    if await in_heroku():
-        heroku_var = HAPP.config()
-        heroku_var["BLACKLIST_GCAST"] = blacklistgrup
-    else:
-        path = dotenv.find_dotenv("config.env")
-        dotenv.set_key(path, "BLACKLIST_GCAST", blacklistgrup)
+    
+    # Menyimpan blacklist ke config file
+    path = dotenv.find_dotenv("config.env")
+    dotenv.set_key(path, "BLACKLIST_GCAST", blacklistgrup)
+    
+    # Restart untuk menerapkan perubahan
     restart()
 
 
 @pyram("delbl", ram)
 async def delblacklist(client: Client, message: Message):
     xxnx = await edit_or_reply(message, "`Processing...`")
-    if HAPP is None:
-        return await xxnx.edit(
-            "**Silahkan Tambahkan Var** `HEROKU_APP_NAME` **untuk menambahkan blacklist**",
-        )
+    
+    # Menghapus pemeriksaan HAPP
     gett = str(message.chat.id)
-    if gett in blchat:
-        blacklistgrup = blchat.replace(gett, "")
-        await xxx.edit(
-            f"**Berhasil Menghapus** `{message.chat.id}` **dari daftar blacklist gcast.**\n\nSedang MeRestart Heroku untuk Menerapkan Perubahan."
+    
+    if gett in BLACKLIST_GCAST.split():
+        blacklistgrup = " ".join(chat_id for chat_id in BLACKLIST_GCAST.split() if chat_id != gett)
+        
+        await xxnx.edit(
+            f"**Berhasil Menghapus** `{message.chat.id}` **dari daftar blacklist gcast.**\n\nSedang Menerapkan Perubahan."
         )
-        if await in_heroku():
-            heroku_var = HAPP.config()
-            heroku_var["BLACKLIST_GCAST"] = blacklistgrup
-        else:
-            path = dotenv.find_dotenv("config.env")
-            dotenv.set_key(path, "BLACKLIST_GCAST", blacklistgrup)
+        
+        # Menyimpan blacklist ke config file
+        path = dotenv.find_dotenv("config.env")
+        dotenv.set_key(path, "BLACKLIST_GCAST", blacklistgrup)
+        
+        # Restart untuk menerapkan perubahan
         restart()
     else:
         await xxnx.edit("**Grup ini tidak ada dalam daftar blacklist gcast.**")
 
+
+@pyram("listbl", ram)
+async def list_blacklist(client: Client, message: Message):
+    if not BLACKLIST_GCAST.strip():
+        return await edit_or_reply(message, "📜 **Tidak ada grup dalam daftar blacklist.**")
+    
+    blacklist = BLACKLIST_GCAST.split()
+    list_bl = "\n".join(f"» `{chat_id}`" for chat_id in blacklist)
+    
+    await edit_or_reply(
+        message,
+        f"🔮 **Daftar Blacklist GCAST:**\n{list_bl}",
+    )
